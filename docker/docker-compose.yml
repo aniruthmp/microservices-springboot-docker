@@ -1,0 +1,177 @@
+version: '2'
+services:
+  couchbasedb:
+    image: shipwright/couchbasedb
+    container_name: couchbasedb
+    hostname: couchbasedb
+    ports:
+     - "8091-8093:8091-8093"
+     - "11210:11210"
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: $HOST_IP
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    image: wurstmeister/kafka
+    container_name: kafka
+    hostname: kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    links:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  discovery:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/eureka-service:1.0.0-SNAPSHOT
+    container_name: discovery
+    hostname: discovery
+    restart: always
+    ports:
+     - "8761:8761"
+     - "9001:9000"
+  configserver:
+    environment:
+      GIT_USERID: $GIT_USERID
+      GIT_PASSWORD: $GIT_PASSWORD
+      COUCHBASE_IP: $HOST_IP
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/config-service:1.0.0-SNAPSHOT
+    container_name: configserver
+    hostname: configserver
+    restart: always
+    ports:
+     - "8888:8888"
+     - "9002:9000"
+    links:
+     - discovery
+    depends_on:
+     - discovery
+  hystrix:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/hystrix-dashboard:1.0.0-SNAPSHOT
+    container_name: hystrix
+    hostname: hystrix
+    restart: always
+    ports:
+     - "8010:8010"
+     - "9003:9000"
+    depends_on:
+     - discovery
+     - configserver
+  zipkin:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/zipkin-service:1.0.0-SNAPSHOT
+    container_name: zipkin
+    hostname: zipkin
+    restart: always
+    ports:
+       - "9410:9410"
+       - "9411:9411"
+       - "9901:9901"
+       - "9004:9000"
+    depends_on:
+     - discovery
+     - configserver
+  reservation:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/reservation-service:1.0.0-SNAPSHOT
+    container_name: reservation
+    hostname: reservation
+    restart: always
+    ports:
+      - "8001:8001"
+      - "9005:9000"
+    links:
+     - discovery
+     - configserver
+     - zipkin
+    depends_on:
+     - discovery
+     - configserver
+  venue:
+    environment:
+      COUCHBASE_IP: $HOST_IP
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/venue-service:1.0.0-SNAPSHOT
+    container_name: venue
+    hostname: venue
+    restart: always
+    ports:
+      - "7000:7000"
+      - "9006:9000"
+    links:
+     - discovery
+     - configserver
+     - zipkin
+    depends_on:
+     - discovery
+     - configserver
+  gateway:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/edge-service:1.0.0-SNAPSHOT
+    container_name: gateway
+    hostname: gateway
+    restart: always
+    ports:
+     - "9999:9999"
+     - "9007:9000"
+    links:
+     - discovery
+     - configserver
+     - reservation
+     - venue
+     - zipkin
+    depends_on:
+     - discovery
+     - configserver
+  composite:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    image: shipwright/composite-service:1.0.0-SNAPSHOT
+    container_name: composite
+    hostname: composite
+    restart: always
+    ports:
+     - "6000:6000"
+     - "9008:9000"
+    links:
+     - discovery
+     - configserver
+     - reservation
+     - venue
+     - zipkin
+    depends_on:
+     - discovery
+     - configserver
+  auth:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      ACME_SERVICE_SECRET: acmesecret
+      EDGE_SERVICE_SECRET: edgesecret
+      RESERVATION_SERVICE_SECRET: reservationsecret
+      VENUE_SERVICE_SECRET: venuesecret
+    image: shipwright/auth-service:1.0.0-SNAPSHOT
+    container_name: auth
+    hostname: auth
+    restart: always
+    ports:
+     - "7777:7777"
+     - "9009:9000"
+    links:
+     - discovery
+     - configserver
+    depends_on:
+     - discovery
+     - configserver

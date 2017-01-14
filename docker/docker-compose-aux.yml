@@ -1,0 +1,42 @@
+version: '2'
+services:
+  couchbasedb:
+    image: shipwright/couchbasedb
+    container_name: couchbasedb
+    hostname: couchbasedb
+    ports:
+     - "8091-8093:8091-8093"
+     - "11210:11210"
+### These lines below will actually work in a server due to resource limitations in laptops
+### Ensure to uncomment logstash appender in all the logback.xml files
+  elasticsearch:
+    build: ../elk/elasticsearch/
+    container_name: elasticsearch
+    hostname: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms2g -Xmx2g"
+  logstash:
+    build: ../elk/logstash/
+    container_name: logstash
+    hostname: logstash
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ../elk/logstash/config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    environment:
+      LS_HEAP_SIZE: "1g"
+  kibana:
+    build: ../elk/kibana/
+    container_name: kibana
+    hostname: kibana
+    volumes:
+      - ../elk/kibana/config/:/opt/kibana/config/
+    ports:
+      - "5601:5601"
+    environment:
+      LS_HEAP_SIZE: "1g"
+      ES_JAVA_OPTS: "-Xms2g -Xmx2g"

@@ -1,0 +1,34 @@
+server:
+  port: 8761
+
+spring:
+  profiles:
+    active: default
+
+---
+
+spring:
+  profiles: docker
+
+eureka:
+  instance:
+    hostname: discovery
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://discovery:${server.port}/eureka/
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+
+---
+
+spring:
+  profiles: default
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    waitTimeInMsWhenSyncEmpty: 0

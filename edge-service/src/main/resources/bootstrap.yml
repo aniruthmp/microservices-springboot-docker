@@ -1,0 +1,26 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: edge-service
+  profiles:
+    active: default
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://configserver:8888
+      fail-fast: true
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
