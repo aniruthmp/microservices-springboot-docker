@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: sb-ref-reservation-service
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://${CONFIG_HOST}:${CONFIG_PORT}
+      fail-fast: true

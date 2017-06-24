@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/crates/l/rustc-serialize.svg)](https://github.com/gxitrident/maven-example2/blob/master/LICENCE)
+[![GitHub license](https://img.shields.io/crates/l/rustc-serialize.svg)](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/LICENSE)
 
 # SpringBoot -- Microservices -- Docker
 
@@ -9,14 +9,14 @@ This is a proof-of-concept application, which demonstrates [Microservice Archite
 
 This sample was decomposed into 2 core microservices. Both are independently deployable applications, organized around certain business capability.
 
-<img width="880" alt="Functional services" src="https://aniruthmp.github.io/images/functional.png">
+<img width="880" alt="Functional services" src="https://aniruthmp.github.io/images/functionalnew.png">
 
 #### Reservation API
 This service uses [HSQLDB](http://hsqldb.org/) as the database. Contains Entity resources exposed as HATEOS. Apart from that, there are couple of extra methods that are used to search the accounts database
 
 Method	| Path	| Description
 ------------- | ------------------------- | -------------
-GET	| /reservations/{id}	| Get specified reservation data	
+GET	| /reservations/{id}	| Get specified reservation data
 GET	| /reservations/search/findByFirstName	| Search by first name
 GET	| /reservations/search/findByLastName	| Search by last name
 GET	| /reservations/1	| Get demo reservation data
@@ -51,7 +51,7 @@ There's a bunch of common patterns in distributed systems, which could help us t
 <img width="880" alt="Infrastructure services" src="https://aniruthmp.github.io/images/infra.png">
 
 ### Config service
-[Spring Cloud Config](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html) is horizontally scalable centralized configuration service for distributed systems. It uses a pluggable repository layer that currently supports local storage, Git, and Subversion. 
+[Spring Cloud Config](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html) is horizontally scalable centralized configuration service for distributed systems. It uses a pluggable repository layer that currently supports local storage, Git, and Subversion.
 
 In this project, I use git profile, which simply loads config files from a given git repository URL. Now, when reservation-service requests it's configuration, Config service responses with `git url`/reservation-service.yml and `git url`/application.yml (which is shared between all client applications).
 
@@ -69,8 +69,8 @@ spring:
       fail-fast: true
 ```
 
-##### With Spring Cloud Config, you can change app configuration dynamically. 
-For example, [MessageController](https://github.com/gxitrident/maven-example2/blob/master/reservation-service/src/main/java/com/carnival/reservation/controller/MessageRestController.java) was annotated with `@RefreshScope`. That means, you can change message without rebuild and restart Reservation service application.
+##### With Spring Cloud Config, you can change app configuration dynamically.
+For example, [MessageController](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/sb-ref-reservation-service/src/main/java/com/example/reservation/controller/MessageRestController.java) was annotated with `@RefreshScope`. That means, you can change message without rebuild and restart Reservation service application.
 
 First, change required properties in Config server. Then, perform refresh request to Notification service:
 `curl -H "Authorization: Bearer #token#" -XPOST http://localhost:8000/refresh`
@@ -79,7 +79,7 @@ Also, you could use Repository [webhooks to automate this process](http://cloud.
 
 ##### Notes
 - There are some limitations for dynamic refresh though. `@RefreshScope` doesn't work with `@Configuration` classes and doesn't affect `@Scheduled` methods
-- `fail-fast` property means that Spring Boot application will fail startup immediately, if it cannot connect to the Config Service. That's very useful when start [all applications together](https://github.com/gxitrident/maven-example2#how-to-run-all-the-things)
+- `fail-fast` property means that Spring Boot application will fail startup immediately, if it cannot connect to the Config Service. That's very useful when start [all applications together](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/README.md#how-to-run-all-the-things)
 
 
 ### API Gateway
@@ -101,7 +101,7 @@ zuul:
 
 ```
 
-That means all requests starting with `/venues` will be routed to Venue service. There is no hardcoded address, as you can see. Zuul uses [Service discovery](https://github.com/gxitrident/maven-example2/blob/master/README.md#service-discovery) mechanism to locate Venue service instances and also [Circuit Breaker and Load Balancer](https://github.com/gxitrident/maven-example2/blob/master/README.md#load-balancer-circuit-breaker-and-http-client), described below.
+That means all requests starting with `/venues` will be routed to Venue service. There is no hardcoded address, as you can see. Zuul uses [Service discovery](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/README.md#service-discovery) mechanism to locate Venue service instances and also [Circuit Breaker and Load Balancer](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/README.md#load-balancer-circuit-breaker-and-http-client), described below.
 
 ### Service discovery
 
@@ -124,7 +124,7 @@ Also, Eureka provides a simple interface, where you can track running services a
 
 ### Authentication & Authorization service
 #### Why OAuth2?
-OAuth2 is a well known authorization technology. It is widely used, to give developers access to users data at Google/Facebook/GitHub directly from the foreign services in a secure way. 
+OAuth2 is a well known authorization technology. It is widely used, to give developers access to users data at Google/Facebook/GitHub directly from the foreign services in a secure way.
 
 **Approach**: The user authenticates on a authorization service, which maps the user session to a token. Any further API call to the resource services must provide this token. The services are able to recognize the provided token and ask the authorization service, which authorities this token grants, and who is the owner of this token.
 
@@ -146,12 +146,12 @@ So, using JWT makes OAuth2 available to microservices, without affecting the arc
 
 ### Load balancer, Circuit breaker and Http client
 
-Netflix OSS provides another great set of tools. 
+Netflix OSS provides another great set of tools.
 
 #### Ribbon
 Ribbon is a client side load balancer which gives you a lot of control over the behaviour of HTTP and TCP clients. Compared to a traditional load balancer, there is no need in additional hop for every over-the-wire invocation - you can contact desired service directly.
 
-Out of the box, it natively integrates with Spring Cloud and Service Discovery. [Eureka Client](https://github.com/gxitrident/maven-example2#service-discovery) provides a dynamic list of available servers so Ribbon could balance between them.
+Out of the box, it natively integrates with Spring Cloud and Service Discovery. [Eureka Client](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/README.md#service-discovery) provides a dynamic list of available servers so Ribbon could balance between them.
 
 #### Orchestration Service
 This is commonly referred as *Orchestration* or *Aggregator* service. This serves the following purposes
@@ -162,17 +162,17 @@ This is commonly referred as *Orchestration* or *Aggregator* service. This serve
 
 This design pattern follows the DRY principle. If there are multiple services that need to access `reservation-service` and `venue-service`, then its recommended to abstract that logic into a composite microservice and aggregate that logic into one service. An advantage of abstracting at this level is that the individual services, i.e. `reservation-service` and `venue-service` and can evolve independently and the business need is still provided by the composite microservice.
 
-Note that each individual microservice has its own (optional) caching and database. If Aggregator is a composite microservice, then it may have its own caching and database layer as well. Aggregator can scale independently on X-axis and Z-axis as well. 
+Note that each individual microservice has its own (optional) caching and database. If Aggregator is a composite microservice, then it may have its own caching and database layer as well. Aggregator can scale independently on X-axis and Z-axis as well.
 
 #### Hystrix
 Hystrix is the implementation of [Circuit Breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html), which gives a control over latency and failure from dependencies accessed over the network. The main idea is to stop cascading failures in a distributed environment with a large number of microservices. That helps to fail fast and recover as soon as possible - important aspects of fault-tolerant systems that self-heal.
 
 Besides circuit breaker control, with Hystrix you can add a fallback method that will be called to obtain a default value in case the main command fails.
 
-Moreover, Hystrix generates metrics on execution outcomes and latency for each command, that we can use to [monitor system behavior](https://github.com/gxitrident/maven-example2/blob/master/README.md#hystrix-dashboard).
+Moreover, Hystrix generates metrics on execution outcomes and latency for each command, that we can use to [monitor system behavior](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/README.md#hystrix-dashboard).
 
 #### Zipkin
-[Zipkin](http://zipkin.io/) is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in microservice architectures. 
+[Zipkin](http://zipkin.io/) is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in microservice architectures.
 
 In this project, I have enabled Spring Sleuth. This implements a distributed tracing solution for Spring Cloud. For most users Sleuth should be invisible, and all your interactions with external systems should be instrumented automatically. You can capture data simply in logs, or by sending it to a remote collector service.
 
@@ -201,7 +201,7 @@ public interface VenueReader {
 
 The Monitoring project is just a small Spring boot application with [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard).
 
-See below [how to get it up and running](https://github.com/gxitrident/maven-example2#how-to-run-all-the-things).
+See below [how to get it up and running](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/README.md#how-to-run-all-the-things).
 
 Let's see our system behavior under load: Hystrix Dashboard lists all the available services, their circuit status, API hit count, thread pools, etc.
 
@@ -225,34 +225,34 @@ Keep in mind, that you are going to start 7 Spring Boot applications. Make sure 
 #### Before you start
 - Install [Docker](https://www.docker.com/products/overview) ver 1.12.
 - Export environment variables: `GIT_USERID`, `GIT_PASSWORD` and `HOST_IP`
+- Export `COUCHBASE_IP` as `couchbase01-devint.sdlc.gxicloud.local`
 - The following environment variables are used for OAuth2/JWT
 	- ACME_SERVICE_SECRET=acmesecret
 	- EDGE_SERVICE_SECRET=edgesecret
 	- RESERVATION_SERVICE_SECRET=reservationsecret
 	- VENUE_SERVICE_SECRET=venuesecret
-- Clone the [GitHub Repository](https://github.com/gxitrident/maven-example2.git) and build artifacts with maven. Issue the command from the project root folder `mvn clean install`. This will generate the Docker images in your local.
-- Before issuing a build, ensure to remove all the previously running containers (related to this project) and remove all the existing images of this project. 
+- Clone all the [Repository](https://innersource.accenture.com/scm/microservices/spring-cloud-microservices.git) and build artifacts with maven. Issue the command from the project root folder `mvn clean install`. This will generate the Docker images in your local.
+- Before issuing a build, ensure to remove all the previously running containers (related to this project) and remove all the existing images of this project.
 - Note that this also builds couchbase database image with the required set up for you !!
 - Ensure to install [jq](https://stedolan.github.io/jq/) This will be used to make testing the URLs easy
 
 #### Docker mode
-Go to the [docker folder](https://github.com/gxitrident/maven-example2/tree/master/docker) and issue the [docker-compose](https://docs.docker.com/compose/) command
+Go to the [docker folder](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/docker) and issue the [docker-compose](https://docs.docker.com/compose/) command
 
  `docker-compose up` This will start all the application docker containers.
- 
+
 #### Important endpoints
-- http://DOCKER-HOST:8888 - Config Server
-- http://DOCKER-HOST:8761 - Eureka Dashboard
-- http://DOCKER-HOST:9999 - Gateway
-- http://DOCKER-HOST:6000 - Composite Service
-- http://DOCKER-HOST:7000 - Venue Service
-- http://DOCKER-HOST:8001 - Reservation Service
-- http://DOCKER-HOST:8010/hystrix.html - Hystrix Dashboard
-- http://DOCKER-HOST:9410 - Zipkin
-- http://DOCKER-HOST:8091 - Couchbase DB
+- http://DOCKER-HOST:11111 - Config Server
+- http://DOCKER-HOST:8500 - Consul UI
+- http://DOCKER-HOST:11104 - Gateway
+- http://DOCKER-HOST:11103 - Composite Service
+- http://DOCKER-HOST:11107 - Venue Service
+- http://DOCKER-HOST:11106 - Reservation Service
+- http://DOCKER-HOST:11105/hystrix.html - Hystrix Dashboard
+- http://DOCKER-HOST:11108 - Zipkin
 
 #### Non-docker mode
-Clone the [GitHub Repository](https://github.com/gxitrident/maven-example2.git) and build artifacts with maven. Issue the command from the project root folder `mvn clean package`. Once the build is successful, individual jars need to be started from terminal windows (or CMD for PC :smirk:) as from the root folder.
+Clone all the [Repository](https://innersource.accenture.com/scm/microservices/spring-cloud-microservices.git)  and build artifacts with maven. Issue the command from the project root folder `mvn clean package`. Once the build is successful, individual jars need to be started from terminal windows (or CMD for PC :smirk:) as from the root folder.
 ``` cmd
 $maven-example2: java -Dspring.profiles.active=dev -jar ./eureka-service/target/eureka-service-*.jar
 ....
@@ -263,8 +263,16 @@ $maven-example2: java -Dspring.profiles.active=dev -jar ./config-service/target/
 ....
 ```
 
+#### Swagger UI
+Swagger UI is exposed for 3 services i.e. `composite-service`, `reservation-service` and `venue-service`. They can be reached in the following URLs
+http://localhost:11107/swagger-ui.html#/ - Venue Service
+http://localhost:11106/swagger-ui.html#/ - Reservation Service
+http://localhost:11103/swagger-ui.html#/ - Composite Service
+
+Ensure to generate the JWT token using the `auth-service` and use that in the Swagger UI
+
 #### Test URLs
-First you need to generate JWT token. Please note that I had already created JWT Token Keystore and attached in the source code. This can very well be replaced by proper signed certificate in future. 
+First you need to generate JWT token. Please note that I had already created JWT Token Keystore and attached in the source code. This can very well be replaced by proper signed certificate in future.
 
 Generate the Access Token using the URL
 ``` bash
@@ -272,37 +280,35 @@ $ TOKEN=`curl -s -X POST -u acme:acmesecret http://localhost:7777/uaa/oauth/toke
 ```
 URL to get 50 records from page 1 from the `venue-service`
 ``` bash
-$ curl -H "Authorization: Bearer $TOKEN" "http://localhost:9999/edge/venues?size=50&page=1"
-```
-URL to get get all the names. Note that, `reservation-service` has the names stored in 2 separate fields i.e. *firstName* and *lastName*.  However, this *Gateway* service does a simple data translation and returns the names *after stripping the HATEOS related fields*
-``` bash
-$ curl -H "Authorization: Bearer $TOKEN" "http://localhost:9999/edge/mobile/names"
-```
-URL to get get all the names and their details from `reservation-service`. Here the *Gateway* service just acts as a proxy.
-``` bash
-$ curl -H "Authorization: Bearer $TOKEN" "http://localhost:9999/edge/desktop/names"
+$ curl -H "Authorization: Bearer $TOKEN" "http://localhost:11104/shipwright/v1/venues?size=50&page=1"
 ```
 URL to get all the bookings for a given reservationId (in this case it is "3"). This is a complex call because internally the `composite-service` calls both `reservation-service` and `venue-service`
 ``` bash
-$ curl -H "Authorization: Bearer $TOKEN" "http://localhost:9999/edge/bookings?id=3"
+$ curl -H "Authorization: Bearer $TOKEN" "http://localhost:11104/shipwright/v1/bookings?id=3"
 ```
 Zipkin URL `http://localhost:9411` You can search for the traces for a given criteria (or you can just search for all traces)
 
-Hystrix URL `http://localhost:8010/hystrix.html` -- this opens the Hystrix dashboard. Once the page loads, give the value `http://gateway:9999/hystrix.stream` or `http://composite:6000/hystrix.stream` in the box and submit.
+Hystrix URL `http://localhost:11105/hystrix.html` -- this opens the Hystrix dashboard. Once the page loads, give the value `http://gateway:11104/admin/hystrix.stream` or `http://composite:11103/admin/hystrix.stream` in the box and submit. If you happen to change the management port, ensure to put that value in the above URLs.
 
-URL to make a POST REST call to `reservation-service` as well as asynchrounous kafka message publish to `venue-service` 
+URL to make a POST REST call to `reservation-service` as well as asynchrounous kafka message publish to `venue-service`
 ``` bash
-$ curl -H "Authorization: Bearer $TOKEN" -H "Accept: application/json" -H "Content-Type: application/json" -X PUT -d '{"firstName":"James", "lastName": "Bond"}' "http://localhost:9999/edge/booking/update?id=3"
+$ curl -H "Authorization: Bearer $TOKEN" -H "Accept: application/json" -H "Content-Type: application/json" -X PUT -d '{"firstName":"James", "lastName": "Bond"}' "http://localhost:11104/shipwright/v1/booking/update?id=3"
+```
+URL to make a DELETE REST call to `venue-service` through the `composite-service`
+``` bash
+$ curl -X DELETE -H "Authorization: Bearer $TOKEN" "http://localhost:11104/shipwright/v1/venues/deleteByReservationId?reservationId=13"
 ```
 
 #### Notes
-All Spring Boot applications require already running [Config Server](https://github.com/gxitrident/maven-example2#config-service) for startup. But we can start all containers simultaneously because of `fail-fast` Spring Boot property and `restart: always` docker-compose option. That means all dependent containers will try to restart until Config Server will be up and running.
+All Spring Boot applications require already running [Config Server](https://innersource.accenture.com/projects/MICROSERVICES/repos/spring-cloud-microservices/browse/sb-ref-config-service) for startup. But we can start all containers simultaneously because of `fail-fast` Spring Boot property and `restart: always` docker-compose option. That means all dependent containers will try to restart until Config Server will be up and running.
 
 Also, Service Discovery mechanism needs some time after all applications startup. Any service is not available for discovery by clients until the instance, the Eureka server and the client all have the same metadata in their local cache, so it could take 3 heartbeats. Default heartbeat period is 30 seconds.
 
 Our Spring Boot Reference Application framework uses lombok as a "helper" to remove common boilerplate code with annotations which must be added to your IDE in order to compile properly.  Instructions to do this for Eclipse and IntelliJ can be found in confluence:
 
-[Using Lombok with Eclipse and intelliJ IDEs](https://carnival.atlassian.net/wiki/display/AC/Using_Lombok_with_Eclipse_and_IntelliJ_IDEs)
+[Using Lombok with Eclipse](https://projectlombok.org/setup/eclipse)
+[Using Lombok with IntelliJ](https://projectlombok.org/setup/intellij)
+
 ## Feedback welcome
 
 This is open source, and would greatly appreciate your input. Feel free to contact <mailto:a.c.parthasarathy@accenture.com> with any question.

@@ -4,28 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.carnival</groupId>
-    <artifactId>gxitrident</artifactId>
+    <groupId>com.example</groupId>
+    <artifactId>base</artifactId>
     <version>1.0.0</version>
     <modules>
-        <module>config-service</module>
-        <module>eureka-service</module>
-        <module>hystrix-dashboard</module>
-        <module>edge-service</module>
-        <module>reservation-service</module>
-        <module>zipkin-service</module>
-        <module>venue-service</module>
+        <module>sb-ref-auth-service</module>
+        <module>sb-ref-config-service</module>
+        <module>sb-ref-composite-service</module>
+        <module>sb-ref-edge-service</module>
+        <module>sb-ref-eureka-service</module>
+        <module>sb-ref-hystrix-dashboard</module>
+        <module>sb-ref-reservation-service</module>
+        <module>sb-ref-venue-service</module>
         <module>couchbasedb</module>
-        <module>composite-service</module>
-        <module>auth-service</module>
-        <module>jwt-config</module>
+        <module>sb-ref-zipkin-service</module>
     </modules>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.2.RELEASE</version>
+        <version>1.5.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -33,13 +32,50 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <docker.image.prefix>shipwright</docker.image.prefix>
-        <docker.image>${docker.image.prefix}/${project.artifactId}</docker.image>
-        <docker.plugin.version>0.4.13</docker.plugin.version>
         <buildNumber>SNAPSHOT</buildNumber>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPaths>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPaths>
+        <docker.image.prefix>CHANGE_ME</docker.image.prefix>
+        <docker.image>${docker.image.prefix}/${project.artifactId}</docker.image>
+        <docker.plugin.version>1.0.0</docker.plugin.version>
+        <undertow.version>1.4.16.Final</undertow.version>
+        <logback.version>1.1.6</logback.version>
     </properties>
 
     <dependencies>
+        <!-- Default Tomcat -->
+        <!--
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        -->
+        <!-- Undertow dependencies. Comment out the above and uncomment the below -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+            <version>${undertow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+            <version>${undertow.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -57,10 +93,6 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
         </dependency>
@@ -68,28 +100,49 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        <!-- Dependencies for JPA Data Persistence -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Logging related libs -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <!-- Version 1.1.7 is broken and fix won't be until 1.1.8 -->
-            <version>1.1.6</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <!-- Version 1.1.7 is broken and fix won't be until 1.1.8 -->
-            <version>1.1.6</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-access</artifactId>
             <!-- Version 1.1.7 is broken and fix won't be until 1.1.8 -->
-            <version>1.1.6</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>4.6</version>
+            <version>4.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
@@ -115,6 +168,11 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.2</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -122,10 +180,127 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Camden.SR2</version>
+                <version>Camden.SR5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}-${buildNumber}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.5.4.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
+            <!-- Docker Plugin -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}:${project.version}-${buildNumber}
+                    </imageName>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <!-- Jar Resource -->
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                        <!-- git.properties Resource -->
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}/classes</directory>
+                            <include>git.properties</include>
+                        </resource>
+                        <!-- build-info.properties Resource -->
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}/classes/META-INF</directory>
+                            <include>build-info.properties</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Zip Plugin -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>assembly/crunchify.xml</descriptor>
+                    </descriptors>
+                    <tarLongFileMode>posix</tarLongFileMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id><!-- this is used for inheritance merges -->
+                        <phase>package</phase><!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Generate git information in git.properties -->
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <!-- Create Code Coverage Report -->
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                    <dataFile>${sonar.jacoco.reportPaths}</dataFile>
+                    <excludes>
+                        <exclude>**/config/**</exclude>
+                        <exclude>**/model/**</exclude>
+                        <exclude>**/item/**</exclude>
+                        <exclude>**/domain/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

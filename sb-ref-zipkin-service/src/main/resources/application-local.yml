@@ -1,0 +1,14 @@
+management:
+  context-path: /admin
+  port: ${server.port}
+  security:
+    enabled: false
+
+spring:
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false

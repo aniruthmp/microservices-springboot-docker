@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>gxitrident</artifactId>
-        <groupId>com.carnival</groupId>
+        <groupId>com.example</groupId>
+        <artifactId>base</artifactId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -31,11 +31,6 @@
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <dockerDirectory>${project.basedir}</dockerDirectory>
                 </configuration>
-            </plugin>
-            <plugin>
-            	<!-- Generate git information in git.properties -->
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

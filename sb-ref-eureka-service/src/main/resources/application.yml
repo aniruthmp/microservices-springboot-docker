@@ -1,0 +1,12 @@
+logging:
+  level: DEBUG
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  ribbon-isolation-strategy: semaphore
+

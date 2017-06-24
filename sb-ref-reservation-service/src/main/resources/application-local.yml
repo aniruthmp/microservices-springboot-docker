@@ -1,0 +1,43 @@
+message: Hello Local
+
+management:
+  context-path: /admin
+  info.git.mode: full
+  port: ${server.port}
+  security:
+    enabled: false
+
+spring:
+  cloud:
+    config:
+      enabled: false
+  zipkin:
+    enabled: false
+
+# Disable security
+security:
+  ignored: /**
+
+###
+# Actuator
+###
+endpoints:
+  health:
+    sensitive: false
+
+###
+# Logging Configuration
+###
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: INFO
+      hibernate: ERROR
+    com.example: INFO
+# Only write log to console
+  file: ./log/application.log
+
+eureka:
+  client:
+    enabled: false

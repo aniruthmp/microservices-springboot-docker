@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: sb-ref-hystrix-dashboard
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://sb-ref-config-service:8080
+      fail-fast: true

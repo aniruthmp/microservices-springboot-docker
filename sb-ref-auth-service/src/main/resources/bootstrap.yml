@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  context-path: /uaa
+
+spring:
+  application:
+    name: sb-ref-auth-service
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://${CONFIG_HOST}:${CONFIG_PORT}
+      fail-fast: true
+
+---
+spring:
+  profiles: local
+  cloud:
+    config:
+      uri: http://localhost:8080
+      fail-fast: true

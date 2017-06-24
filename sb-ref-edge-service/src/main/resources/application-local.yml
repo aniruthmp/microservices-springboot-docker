@@ -1,0 +1,62 @@
+# Disable Spring Cloud and Zipkin
+spring:
+  profiles:
+    active: local
+  cloud:
+    config:
+      enabled: false
+  zipkin:
+    enabled: false
+
+# Disable security
+security:
+  ignored: /**
+
+###
+# Actuator
+###
+endpoints:
+  health:
+    sensitive: false
+
+management:
+  port: ${server.port}
+  context-path: /admin
+  info.git.mode: full
+  security:
+    enabled: false
+
+###
+# Hystrix Configuration
+###
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+
+###
+# Logging Configuration
+###
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: INFO
+      hibernate: ERROR
+    com.example: INFO
+  file: ./log/application.log
+
+zuul:
+  ignoredServices: '*'
+  sensitiveHeaders: Authorization
+  routes:
+    shipwright:
+      path: /shipwright/v1/**
+      serviceId: sb-ref-composite-service
+
+eureka:
+  client:
+    enabled: false

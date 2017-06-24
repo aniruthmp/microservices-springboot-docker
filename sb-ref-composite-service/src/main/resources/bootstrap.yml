@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  error.whitelabel.enabled: false
+
+spring:
+  application:
+    name: sb-ref-composite-service
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://sb-ref-config-service:8080
+      fail-fast: true
