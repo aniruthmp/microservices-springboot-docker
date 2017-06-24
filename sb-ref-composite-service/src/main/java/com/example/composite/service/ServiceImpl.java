@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Aniruth Parthasarathy
@@ -78,40 +77,6 @@ public class ServiceImpl {
     }
 
     @HystrixCommand(fallbackMethod = "bookingUpdateError")
-    public ResponseEntity<Void> bookingUpdate_(long id, Reservation reservation, String token) {
-        log.info("Before Update.. For id = " + id + " ; " + reservation.toString());
-
-        /**
-         * Feign doesn't support PATCH. Hence, we can do only PUT
-         */
-        Reservation oldReservation = this
-                .reservationReader
-                .findById(id, token)
-                .getContent();
-        log.info("Got the reservation " + oldReservation.toString());
-        if (Objects.nonNull(oldReservation)) {
-            oldReservation.setFirstName(Objects.toString(reservation.getFirstName(),
-                    oldReservation.getFirstName()));
-            oldReservation.setLastName(Objects.toString(reservation.getLastName(),
-                    oldReservation.getLastName()));
-            Reservation updatedReservation = this
-                    .reservationReader
-                    .updateReservation(id, oldReservation, token)
-                    .getContent();
-            log.info("Updated reservation " + updatedReservation.toString());
-
-            //We will update the reservationName in Venue service through Kafka Event
-            PublishModel publishModel = new PublishModel();
-            publishModel.setId(id);
-            publishModel.setReservationName(reservation.getReservationName());
-            kafkaProducer.sendMessage(TOPIC, JsonUtil.toJson(publishModel));
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            log.info("Couldn't find any reservation for id: " + id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
     public ResponseEntity<Void> bookingUpdate(long id, Reservation reservation, String token) {
         log.info("Before Update.. For id = " + id + " ; " + reservation.toString());
 
@@ -130,7 +95,7 @@ public class ServiceImpl {
             kafkaProducer.sendMessage(TOPIC, JsonUtil.toJson(publishModel));
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -15,7 +15,8 @@ services:
       - "2181:2181"
   kafka:
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     image: wurstmeister/kafka
     container_name: kafka
