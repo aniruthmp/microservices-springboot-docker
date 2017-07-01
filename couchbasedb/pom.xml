@@ -2,15 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>com.example</groupId>
-        <artifactId>base</artifactId>
-        <version>1.0.0</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.example</groupId>
     <artifactId>couchbasedb</artifactId>
+    <version>1.0.0</version>
     <description>Couchbase Database</description>
+
+    <properties>
+        <buildNumber>SNAPSHOT</buildNumber>
+        <docker.image.prefix>shipwright</docker.image.prefix>
+        <docker.image>${docker.image.prefix}/${project.artifactId}</docker.image>
+        <docker.plugin.version>1.0.0</docker.plugin.version>
+    </properties>
 
     <build>
         <plugins>

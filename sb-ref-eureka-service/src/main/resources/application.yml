@@ -4,9 +4,36 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
 
 zuul:
   ribbon-isolation-strategy: semaphore
 
+spring:
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: docker
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST}:${EUREKA_PORT}/eureka/
+    fetch-registry: false
+
+---
+spring:
+  profiles: local
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetch-registry: false
