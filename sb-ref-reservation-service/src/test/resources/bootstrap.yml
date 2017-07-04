@@ -1,8 +1,0 @@
-server:
-  port: 8080
-
-spring:
-  application:
-    name: sb-ref-reservation-service
-  profiles:
-    active: test

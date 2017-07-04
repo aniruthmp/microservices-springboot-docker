@@ -32,6 +32,9 @@ services:
     environment:
       SERVER_PORT: 8761
       JAVA_OPTS: -Xmx4g
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_HOST: sb-ref-eureka-service
+      EUREKA_PORT: 8761
     image: shipwright/sb-ref-eureka-service:1.0.0-SNAPSHOT
     container_name: sb-ref-eureka-service
     hostname: sb-ref-eureka-service
