@@ -3,6 +3,7 @@ package com.example.reservation.db.domain;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.data.annotation.CreatedBy;
@@ -25,6 +26,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @Audited
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class Reservation implements Serializable {
     @Id
     @ApiModelProperty(example = "7", required = true)
@@ -62,4 +64,12 @@ public class Reservation implements Serializable {
 
     @LastModifiedBy
     private String modifiedBy;
+
+    public Reservation(long id, String firstName, String lastName, String email, String gender) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.gender = gender;
+    }
 }

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import springfox.documentation.staticdocs.Swagger2MarkupResultHandler;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
@@ -26,20 +27,27 @@ import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @WebAppConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @AutoConfigureRestDocs(outputDir = "build/asciidoc/snippets")
 @SpringBootTest(classes = {ReservationServiceApplication.class, SwaggerConfig.class})
 @AutoConfigureMockMvc
 public class ReservationServiceApplicationTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Test
-	public void contextLoads() {
-	}
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Before
+    public void setUp(){
+        this.mockMvc = webAppContextSetup(webApplicationContext).build();
+    }
+    @Test
+    public void contextLoads() {
+    }
 
 	@Test
 	public void createSpringfoxSwaggerJson() throws Exception {
@@ -63,16 +71,4 @@ public class ReservationServiceApplicationTests {
 		}
 	}
 
-	//Commenting out this method as springfox-staticdocs is not yet updated for ver 2.7.0
-//	@Test
-//	public void convertSwaggerToAsciiDoc() {
-//		try {
-//			this.mockMvc.perform(get("/v2/api-docs")
-//                    .accept(MediaType.APPLICATION_JSON))
-//                    .andDo(Swagger2MarkupResultHandler.outputDirectory("target/asciidoc/generated/").build())
-//                    .andExpect(status().isOk());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 }

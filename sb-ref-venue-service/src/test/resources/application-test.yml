@@ -1,0 +1,65 @@
+# Disable Spring Cloud and Zipkin
+spring:
+  profiles:
+    active: test
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: venuetopic
+          content-type: application/json
+          group: venuegroup
+          resetOffsets: true
+      kafka:
+        binder:
+          brokers: localhost:9092
+        filter: test
+    config:
+      enabled: false
+  zipkin:
+    enabled: false
+  data:
+    couchbase:
+      auto-index: false
+  couchbase:
+    bootstrap-hosts: localhost
+    bucket:
+      name: default
+      password:
+    env:
+      ssl:
+        enabled: false
+
+# Disable security
+security:
+  ignored: /**
+
+###
+# Actuator
+###
+endpoints:
+  health:
+    sensitive: false
+
+management:
+  port: ${server.port}
+  context-path: /admin
+  info.git.mode: full
+  security:
+    enabled: false
+
+###
+# Logging Configuration
+###
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: INFO
+      hibernate: ERROR
+    com.example: INFO
+  file: ./log/application.log
+
+eureka:
+  client:
+    enabled: false
