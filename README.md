@@ -311,4 +311,4 @@ Our Spring Boot Reference Application framework uses lombok as a "helper" to rem
 
 ## Feedback welcome
 
-This is open source, and would greatly appreciate your input. Feel free to contact <mailto:a.c.parthasarathy@accenture.com> with any question.
+This is open source, and would greatly appreciate your input. Feel free to contact <mailto:aniruth.parthasarathy@gmail.com> with any question.
