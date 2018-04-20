@@ -9,7 +9,7 @@ This is a proof-of-concept application, which demonstrates [Microservice Archite
 
 This sample was decomposed into 2 core microservices. Both are independently deployable applications, organized around certain business capability.
 
-<img width="880" alt="Functional services" src="https://aniruthmp.github.io/images/functionalnew.png">
+![Screenshot](./images/functionalnew.png)
 
 #### Reservation API
 This service uses [HSQLDB](http://hsqldb.org/) as the database. Contains Entity resources exposed as HATEOS. Apart from that, there are couple of extra methods that are used to search the accounts database
@@ -48,7 +48,8 @@ PUT	| /booking/update?id={id}	| Update the reservation through **REST** to reser
 
 ## Infrastructure / Auxiliary services
 There's a bunch of common patterns in distributed systems, which could help us to make described core services work. [Spring cloud](http://projects.spring.io/spring-cloud/) provides powerful tools that enhance Spring Boot applications behaviour to implement those patterns. I'll cover them briefly.
-<img width="880" alt="Infrastructure services" src="https://aniruthmp.github.io/images/infra.png">
+![Screenshot](./images/infra.png)
+
 
 ### Config service
 [Spring Cloud Config](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html) is horizontally scalable centralized configuration service for distributed systems. It uses a pluggable repository layer that currently supports local storage, Git, and Subversion.
@@ -176,7 +177,7 @@ Moreover, Hystrix generates metrics on execution outcomes and latency for each c
 
 In this project, I have enabled Spring Sleuth. This implements a distributed tracing solution for Spring Cloud. For most users Sleuth should be invisible, and all your interactions with external systems should be instrumented automatically. You can capture data simply in logs, or by sending it to a remote collector service.
 
-<img width="880" src="https://aniruthmp.github.io/images/zipkin.png">
+![Screenshot](./images/zipkin.png)
 
 #### Feign
 Feign is a declarative Http client, which seamlessly integrates with Ribbon and Hystrix. Actually, with one `spring-cloud-starter-feign` dependency and `@EnableFeignClients` annotation you have a full set of Load balancer, Circuit breaker and Http client with sensible ready-to-go default configuration.
@@ -205,7 +206,7 @@ See below [how to get it up and running](https://innersource.accenture.com/proje
 
 Let's see our system behavior under load: Hystrix Dashboard lists all the available services, their circuit status, API hit count, thread pools, etc.
 
-<img width="880" src="https://aniruthmp.github.io/images/hystrix-capture.png">
+![Screenshot](./images/hystrix-capture.png)
 
 
 ## Infrastructure automation
